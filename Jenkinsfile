@@ -2,6 +2,10 @@ pipeline {
 
   agent any
 
+  environment {
+    MY_TEMP_ENV_VAR_1 = "hi"
+  }
+
   stages {
 
     stage('My Build stage 01') {
@@ -11,11 +15,18 @@ pipeline {
     }
 
     stage('My Build stage 02') {
+      when {
+        expression {
+          BRANCH_NAME == '6.2' || BRANCH_NAME == 'master'
+        }
+      }
+
       steps {
         sh """
           echo "failure" >> /tmp/demo/stage_02_a.txt
         """
         echo "failure" >> /tmp/demo/stage_02_b.txt
+        echo "Displaying --> ${MY_TEMP_ENV_VAR_1}"
       }
     }
    
